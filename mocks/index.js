@@ -3,12 +3,26 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import _ from 'lodash';
 
+const prefix = 'http://localhost/api/v1';
+export const createPath = (...paths) => [prefix, ...paths].join('/');
+
 const runServer = (initialState) => {
-  const prefix = 'http://localhost/api/v1';
-  const createPath = (...paths) => [prefix, ...paths].join('/');
   const state = initialState;
 
   const handlers = [
+    rest.post(createPath('lists'), (req, res, ctx) => {
+      const mockedList = {
+        id: 2 + _.uniqueId(),
+        name: req.body.name,
+        removable: true,
+      };
+      ctx.delay();
+      return res(ctx.json(mockedList));
+    }),
+    rest.delete(createPath('lists', ':id'), (req, res, ctx) => {
+      ctx.delay();
+      return res(ctx.status(204));
+    }),
     rest.post(createPath('lists', ':id', 'tasks'), (req, res, ctx) => {
       const mockedTask = {
         completed: false,
@@ -17,20 +31,15 @@ const runServer = (initialState) => {
         text: req.body.text,
         touched: 1655371223931,
       };
-      state.tasks.push(mockedTask);
       ctx.delay();
       return res(ctx.json(mockedTask));
     }),
     rest.patch(createPath('tasks', ':id'), (req, res, ctx) => {
       const foundedTask = state.tasks.find((task) => task.id === Number(req.params.id));
       ctx.delay();
-      state.tasks.filter((task) => task.id !== req.params.id);
-      state.tasks.push({ ...foundedTask, completed: req.body.completed });
-      const taskIndex = state.tasks.findIndex((task) => task.id === foundedTask.id);
-      return res(ctx.json({ ...state.tasks[taskIndex], completed: req.body.completed }));
+      return res(ctx.json({ ...foundedTask, completed: req.body.completed }));
     }),
     rest.delete(createPath('tasks', ':id'), (req, res, ctx) => {
-      state.tasks.filter((task) => task.id !== req.params.id);
       ctx.delay();
       return res(ctx.status(204));
     }),
