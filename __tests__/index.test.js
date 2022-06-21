@@ -1,7 +1,7 @@
+import initTodoApp from '@hexlet/react-todo-app-with-backend';
+import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
 import { render, screen, within, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import initTodoApp from '@hexlet/react-todo-app-with-backend';
 import runServer, { createPath } from '../mocks';
 
 let virtualDom;
@@ -15,9 +15,11 @@ test('Index', () => {
   });
   render(virtualDom);
 
-  expect(screen.getByText('Hexlet Todos')).toBeInTheDocument();
-  expect(screen.getByText('primary')).toBeInTheDocument();
-  expect(screen.getByText('Tasks list is empty')).toBeInTheDocument();
+  expect(screen.getByText('Hexlet Todos')).toBeVisible();
+  expect(screen.getByText('Lists')).toBeVisible();
+  expect(screen.getByText('Tasks')).toBeVisible();
+  expect(screen.getByText('primary')).toBeVisible();
+  expect(screen.getByText('Tasks list is empty')).toBeVisible();
 });
 
 describe('Core', () => {
@@ -37,6 +39,7 @@ describe('Core', () => {
 
     server = runServer(initialState);
     server.listen();
+
     virtualDom = initTodoApp(initialState);
     render(virtualDom);
   });
@@ -53,9 +56,25 @@ describe('Core', () => {
     it('Post', async () => {
       const firstTaskName = 'scud';
       const secondTaskName = 'storm';
+
       const taskForm = screen.getByTestId('task-form');
       const input = within(taskForm).getByRole('textbox');
-      const submit = within(taskForm).getByRole('button');
+      const submit = within(taskForm).getByRole('button', { name: 'Add' });
+
+      userEvent.type(input, 'launched');
+      userEvent.click(screen.getByText('Hexlet Todos'));
+
+      await waitFor(() => {
+        expect(input).toHaveClass('is-valid');
+      });
+
+      userEvent.clear(input);
+      userEvent.click(submit);
+
+      await waitFor(() => {
+        expect(input).toHaveClass('is-invalid');
+        expect(screen.getByText('Required!')).toBeVisible();
+      });
 
       userEvent.type(input, firstTaskName);
       userEvent.click(submit);
@@ -67,6 +86,8 @@ describe('Core', () => {
         const ul = screen.getByTestId('tasks');
         expect(within(ul).getAllByText(firstTaskName)).toHaveLength(1);
         expect(within(ul).getByText(firstTaskName)).toBeInTheDocument();
+        expect(input).not.toHaveClass('is-invalid');
+        expect(screen.queryByText('Required!')).not.toBeInTheDocument();
       });
 
       expect(input).not.toHaveAttribute('readonly');
@@ -92,12 +113,12 @@ describe('Core', () => {
         expect(within(ul).getAllByText(secondTaskName)).toHaveLength(1);
       });
 
-      expect(within(taskForm).getByText(`${secondTaskName} already exists`)).toBeInTheDocument();
+      expect(within(taskForm).getByText(`${secondTaskName} already exists`)).toBeVisible();
     });
 
     it('Delete', async () => {
       const ul = screen.getByTestId('tasks');
-      const removeButtons = within(ul).getAllByRole('button');
+      const removeButtons = within(ul).getAllByRole('button', { name: 'Remove' });
       const [firstButton, secondButton] = removeButtons;
 
       expect(within(ul).getAllByRole('listitem')).toHaveLength(2);
@@ -146,6 +167,7 @@ describe('Core', () => {
 
       userEvent.click(firstTask);
       userEvent.click(secondTask);
+
       expect(firstTask).toBeDisabled();
       expect(secondTask).toBeDisabled();
 
@@ -166,13 +188,13 @@ describe('Core', () => {
 
       const taskForm = screen.getByTestId('task-form');
       const input = within(taskForm).getByRole('textbox');
-      const submit = within(taskForm).getByRole('button');
+      const submit = within(taskForm).getByRole('button', { name: 'Add' });
 
       userEvent.type(input, taskName);
       userEvent.click(submit);
 
       await waitFor(() => {
-        expect(screen.getByText('Network error')).toBeInTheDocument();
+        expect(screen.getByText('Network error')).toBeVisible();
       });
 
       expect(screen.queryByText(taskName)).not.toBeInTheDocument();
@@ -186,10 +208,25 @@ describe('Core', () => {
 
       const listForm = screen.getByTestId('list-form');
       const input = within(listForm).getByRole('textbox');
-      const submit = within(listForm).getByRole('button');
+      const submit = within(listForm).getByRole('button', { name: 'add list' });
 
       expect(input).not.toHaveAttribute('readonly');
       expect(submit).toBeEnabled();
+
+      userEvent.type(input, 'lineage');
+      userEvent.click(screen.getByText('Hexlet Todos'));
+
+      await waitFor(() => {
+        expect(input).toHaveClass('is-valid');
+      });
+
+      userEvent.clear(input);
+      userEvent.click(submit);
+
+      await waitFor(() => {
+        expect(input).toHaveClass('is-invalid');
+        expect(screen.getByText('Required!')).toBeVisible();
+      });
 
       userEvent.type(input, firstListName);
       userEvent.click(submit);
@@ -201,6 +238,8 @@ describe('Core', () => {
         const ul = screen.getByTestId('lists');
         expect(within(ul).getAllByText(firstListName)).toHaveLength(1);
         expect(within(ul).getByText(firstListName)).toBeInTheDocument();
+        expect(input).not.toHaveClass('is-invalid');
+        expect(screen.queryByText('Required!')).not.toBeInTheDocument();
       });
 
       userEvent.type(input, secondListName);
@@ -223,7 +262,7 @@ describe('Core', () => {
         expect(within(ul).getAllByText(secondListName)).toHaveLength(1);
       });
 
-      expect(within(listForm).getByText(`${secondListName} already exists`)).toBeInTheDocument();
+      expect(within(listForm).getByText(`${secondListName} already exists`)).toBeVisible();
     });
 
     it('Delete', async () => {
@@ -254,13 +293,13 @@ describe('Core', () => {
 
       const listForm = screen.getByTestId('list-form');
       const input = within(listForm).getByRole('textbox');
-      const submit = within(listForm).getByRole('button');
+      const submit = within(listForm).getByRole('button', { name: 'add list' });
 
       userEvent.type(input, listName);
       userEvent.click(submit);
 
       await waitFor(() => {
-        expect(screen.getByText('Network error')).toBeInTheDocument();
+        expect(screen.getByText('Network error')).toBeVisible();
       });
 
       expect(screen.queryByText(listName)).not.toBeInTheDocument();
