@@ -21,6 +21,7 @@ test('Index', () => {
   expect(screen.getByText('Lists')).toBeVisible();
   expect(screen.getByText('Tasks')).toBeVisible();
   expect(screen.getByText('primary')).toBeVisible();
+  expect(screen.getByText('primary')).toHaveClass('link-primary');
   expect(screen.getByText('Tasks list is empty')).toBeVisible();
   expect(screen.getByRole('button', { name: 'add list' })).toBeVisible();
   expect(screen.getByRole('textbox', { name: 'New list' })).toBeVisible();
@@ -231,6 +232,7 @@ describe('Core', () => {
 
       expect(input).not.toHaveAttribute('readonly');
       expect(submit).toBeEnabled();
+      expect(screen.getByText('primary')).toHaveClass('link-primary');
 
       userEvent.type(input, 'lineage');
       userEvent.click(screen.getByText('Hexlet Todos'));
@@ -259,6 +261,9 @@ describe('Core', () => {
         expect(within(ul).getByText(firstListName)).toBeInTheDocument();
         expect(input).not.toHaveClass('is-invalid');
         expect(screen.queryByText('Required!')).not.toBeInTheDocument();
+        expect(screen.getByText('Tasks list is empty')).toBeVisible();
+        expect(screen.getByText(firstListName)).toHaveClass('link-primary');
+        expect(screen.getByText('primary')).toHaveClass('link-secondary');
       });
 
       userEvent.type(input, secondListName);
@@ -298,6 +303,40 @@ describe('Core', () => {
       await waitFor(() => {
         expect(within(ul).getAllByRole('listitem')).toHaveLength(1);
         expect(within(ul).queryByText('secondary')).not.toBeInTheDocument();
+      });
+    });
+
+    it('Delete and Post with the same name', async () => {
+      const listsUl = screen.getByTestId('lists');
+      const tasksUl = screen.getByTestId('tasks');
+      const removeButton = within(listsUl).getByRole('button', { name: 'remove list' });
+      const listForm = screen.getByTestId('list-form');
+      const input = within(listForm).getByRole('textbox', { name: 'New list' });
+      const submit = within(listForm).getByRole('button', { name: 'add list' });
+
+      expect(within(tasksUl).getAllByRole('listitem')).toHaveLength(2);
+      expect(screen.getByText('primary')).toHaveClass('link-primary');
+
+      userEvent.click(screen.getByText('secondary'));
+
+      await waitFor(() => {
+        expect(screen.getByText('primary')).toHaveClass('link-secondary');
+        expect(screen.getByText('secondary')).toHaveClass('link-primary');
+        expect(within(tasksUl).getAllByRole('listitem')).toHaveLength(1);
+      });
+
+      userEvent.click(removeButton);
+
+      await waitFor(() => {
+        expect(within(tasksUl).getAllByRole('listitem')).toHaveLength(1);
+        expect(screen.getByText('primary')).toHaveClass('link-primary');
+      });
+
+      userEvent.type(input, 'secondary');
+      userEvent.click(submit);
+
+      await waitFor(() => {
+        expect(screen.getByText('Tasks list is empty')).toBeVisible();
       });
     });
 
