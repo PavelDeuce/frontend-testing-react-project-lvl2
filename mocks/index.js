@@ -7,7 +7,7 @@ const prefix = 'http://localhost/api/v1';
 export const createPath = (...paths) => [prefix, ...paths].join('/');
 
 const runServer = (initialState) => {
-  const state = initialState;
+  let { tasks, lists } = initialState;
 
   const handlers = [
     rest.post(createPath('lists'), (req, res, ctx) => {
@@ -16,10 +16,12 @@ const runServer = (initialState) => {
         name: req.body.name,
         removable: true,
       };
+      lists.push(mockedList);
       ctx.delay();
       return res(ctx.json(mockedList));
     }),
     rest.delete(createPath('lists', ':id'), (req, res, ctx) => {
+      lists = lists.filter((list) => list.id !== req.params.id);
       ctx.delay();
       return res(ctx.status(204));
     }),
@@ -31,15 +33,20 @@ const runServer = (initialState) => {
         text: req.body.text,
         touched: 1655371223931,
       };
+      tasks.push(mockedTask);
       ctx.delay();
       return res(ctx.json(mockedTask));
     }),
     rest.patch(createPath('tasks', ':id'), (req, res, ctx) => {
-      const foundedTask = state.tasks.find((task) => task.id === Number(req.params.id));
+      const foundedTask = tasks.find((task) => task.id === Number(req.params.id));
+      const updatedTask = { ...foundedTask, completed: req.body.completed };
+      tasks = tasks.filter((task) => task.id !== foundedTask);
+      tasks.push(updatedTask);
       ctx.delay();
-      return res(ctx.json({ ...foundedTask, completed: req.body.completed }));
+      return res(ctx.json(updatedTask));
     }),
     rest.delete(createPath('tasks', ':id'), (req, res, ctx) => {
+      tasks = tasks.filter((task) => task.id !== req.params.id);
       ctx.delay();
       return res(ctx.status(204));
     }),
