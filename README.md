@@ -5,3 +5,5 @@
 [![Node CI](https://github.com/PavelDeuce/react-todo-app-testing/actions/workflows/nodejs.yml/badge.svg)](https://github.com/PavelDeuce/react-todo-app-testing/actions/workflows/nodejs.yml)
 
 [Testing] @hexlet/react-todo-app-with-backend
+
+[![asciicast](https://asciinema.org/a/lkPuuDB8riQbujb84AVzbA4Du.svg)](https://asciinema.org/a/lkPuuDB8riQbujb84AVzbA4Du)
