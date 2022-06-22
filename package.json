@@ -1,7 +1,17 @@
 {
   "name": "@hexlet/code",
-  "version": "1.0.1",
-  "description": "to-do app testing",
+  "version": "2.0.0",
+  "description": "Testing @hexlet/react-todo-app-with-backend",
+  "keywords": [
+    "testing",
+    "react",
+    "msw",
+    "react-testing-library",
+    "todo-app",
+    "frontend-testing",
+    "jest",
+    "mocks"
+  ],
   "main": "__tests__/index.test.js",
   "scripts": {
     "test": "npx jest --colors",
@@ -10,17 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PavelDeuce/frontend-testing-react-project-lvl2.git"
+    "url": "git+https://github.com/PavelDeuce/react-todo-app-testing.git"
   },
-  "keywords": [
-    "testing"
-  ],
   "author": "Pavel Deryugin (PavelDeuce)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/PavelDeuce/frontend-testing-react-project-lvl2/issues"
+    "url": "https://github.com/PavelDeuce/react-todo-app-testing/issues"
   },
-  "homepage": "https://github.com/PavelDeuce/frontend-testing-react-project-lvl2#readme",
+  "homepage": "https://github.com/PavelDeuce/react-todo-app-testing#readme",
   "devDependencies": {
     "@babel/core": "^7.18.5",
     "@babel/eslint-parser": "^7.14.4",
