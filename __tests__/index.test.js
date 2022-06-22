@@ -1,7 +1,9 @@
 import initTodoApp from '@hexlet/react-todo-app-with-backend';
 import userEvent from '@testing-library/user-event';
 import { rest } from 'msw';
-import { render, screen, within, waitFor } from '@testing-library/react';
+import {
+  render, screen, within, waitFor,
+} from '@testing-library/react';
 import runServer, { createPath } from '../mocks';
 
 let virtualDom;
@@ -35,9 +37,24 @@ describe('Core', () => {
         { id: 2, name: 'secondary', removable: true },
       ],
       tasks: [
-        { id: 1, listId: 1, text: 'Primary Task 1', completed: false },
-        { id: 2, listId: 1, text: 'Primary Task 2', completed: false },
-        { id: 3, listId: 2, text: 'Secondary Task 1', completed: false },
+        {
+          id: 1,
+          listId: 1,
+          text: 'Primary Task 1',
+          completed: false,
+        },
+        {
+          id: 2,
+          listId: 1,
+          text: 'Primary Task 2',
+          completed: false,
+        },
+        {
+          id: 3,
+          listId: 2,
+          text: 'Secondary Task 1',
+          completed: false,
+        },
       ],
     };
 
@@ -183,9 +200,7 @@ describe('Core', () => {
 
     it('Network error', async () => {
       server.use(
-        rest.post(createPath('lists', ':id', 'tasks'), (req, res) => {
-          return res.networkError('Network Error');
-        })
+        rest.post(createPath('lists', ':id', 'tasks'), (req, res) => res.networkError('Network Error')),
       );
 
       const taskName = "Diego's Task";
@@ -287,11 +302,7 @@ describe('Core', () => {
     });
 
     it('Network error', async () => {
-      server.use(
-        rest.post(createPath('lists'), (req, res) => {
-          return res.networkError('Network Error');
-        })
-      );
+      server.use(rest.post(createPath('lists'), (req, res) => res.networkError('Network Error')));
 
       const listName = "Isaac Clarke's List";
 
