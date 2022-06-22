@@ -22,15 +22,15 @@
   },
   "homepage": "https://github.com/PavelDeuce/frontend-testing-react-project-lvl2#readme",
   "devDependencies": {
-    "@babel/core": "^7.14.3",
+    "@babel/core": "^7.18.5",
     "@babel/eslint-parser": "^7.14.4",
-    "@babel/preset-env": "^7.14.4",
-    "@babel/preset-react": "^7.13.13",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-react": "^7.17.12",
     "@jest/globals": "^26.6.2",
+    "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^11.2.7",
-    "@testing-library/jest-dom": "^5.13.0",
-    "@testing-library/user-event": "^13.1.9",
-    "babel-jest": "^27.0.2",
+    "@testing-library/user-event": "^13.5.0",
+    "babel-jest": "^27.5.1",
     "eslint": "^7.19.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.1.0",
@@ -44,7 +44,6 @@
   },
   "dependencies": {
     "@hexlet/react-todo-app-with-backend": "^0.10.0",
-    "@jest/globals": "^27.0.3",
     "lodash": "^4.17.21"
   }
 }

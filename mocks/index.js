@@ -22,6 +22,7 @@ const runServer = (initialState) => {
     }),
     rest.delete(createPath('lists', ':id'), (req, res, ctx) => {
       lists = lists.filter((list) => list.id !== req.params.id);
+      tasks = tasks.filter((task) => task.listId !== req.params.id);
       ctx.delay();
       return res(ctx.status(204));
     }),

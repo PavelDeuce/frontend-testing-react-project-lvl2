@@ -20,6 +20,10 @@ test('Index', () => {
   expect(screen.getByText('Tasks')).toBeVisible();
   expect(screen.getByText('primary')).toBeVisible();
   expect(screen.getByText('Tasks list is empty')).toBeVisible();
+  expect(screen.getByRole('button', { name: 'add list' })).toBeVisible();
+  expect(screen.getByRole('textbox', { name: 'New list' })).toBeVisible();
+  expect(screen.getByRole('button', { name: 'Add' })).toBeVisible();
+  expect(screen.getByRole('textbox', { name: 'New task' })).toBeVisible();
 });
 
 describe('Core', () => {
@@ -58,7 +62,7 @@ describe('Core', () => {
       const secondTaskName = 'storm';
 
       const taskForm = screen.getByTestId('task-form');
-      const input = within(taskForm).getByRole('textbox');
+      const input = within(taskForm).getByRole('textbox', { name: 'New task' });
       const submit = within(taskForm).getByRole('button', { name: 'Add' });
 
       userEvent.type(input, 'launched');
@@ -187,7 +191,7 @@ describe('Core', () => {
       const taskName = "Diego's Task";
 
       const taskForm = screen.getByTestId('task-form');
-      const input = within(taskForm).getByRole('textbox');
+      const input = within(taskForm).getByRole('textbox', { name: 'New task' });
       const submit = within(taskForm).getByRole('button', { name: 'Add' });
 
       userEvent.type(input, taskName);
@@ -207,7 +211,7 @@ describe('Core', () => {
       const secondListName = 'knight';
 
       const listForm = screen.getByTestId('list-form');
-      const input = within(listForm).getByRole('textbox');
+      const input = within(listForm).getByRole('textbox', { name: 'New list' });
       const submit = within(listForm).getByRole('button', { name: 'add list' });
 
       expect(input).not.toHaveAttribute('readonly');
@@ -292,7 +296,7 @@ describe('Core', () => {
       const listName = "Isaac Clarke's List";
 
       const listForm = screen.getByTestId('list-form');
-      const input = within(listForm).getByRole('textbox');
+      const input = within(listForm).getByRole('textbox', { name: 'New list' });
       const submit = within(listForm).getByRole('button', { name: 'add list' });
 
       userEvent.type(input, listName);
